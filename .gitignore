@@ -1,0 +1,23 @@
+# Private keys and local secrets
+*.key
+*.pem
+.env
+.env.*
+secrets/
+
+# VM disks and device images
+*.vdi
+*.vmdk
+*.vhd
+*.vhdx
+*.qcow2
+*.iso
+*.bin
+*.image
+
+# Temporary files
+*.tmp
+*.bak
+*~
+.DS_Store
+Thumbs.db

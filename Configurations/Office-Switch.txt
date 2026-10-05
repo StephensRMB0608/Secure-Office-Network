@@ -1,0 +1,260 @@
+!
+version 12.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+no service dhcp
+!
+hostname Office-Switch
+!
+boot-start-marker
+boot-end-marker
+!
+!
+no aaa new-model
+memory-size iomem 5
+no ip routing
+no ip icmp rate-limit unreachable
+no ip cef
+!
+!
+!
+!
+no ip domain lookup
+ip domain name office.lab
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+macro name add_vlan
+end
+vlan database
+vlan $v
+exit
+@
+macro name del_vlan
+end
+vlan database
+no vlan $v
+exit
+@
+!
+vtp file nvram:vlan.dat
+username labadmin privilege 15 secret <REDACTED>
+archive
+ log config
+  hidekeys
+!
+!
+!
+!
+ip tcp synwait-time 5
+ip ssh version 2
+!
+!
+!
+!
+interface FastEthernet0/0
+ description *** Unused for Layer2 EtherSwitch ***
+ no ip address
+ no ip route-cache
+ shutdown
+ duplex auto
+ speed auto
+!
+interface FastEthernet0/1
+ description *** Unused for Layer2 EtherSwitch ***
+ no ip address
+ no ip route-cache
+ shutdown
+ duplex auto
+ speed auto
+!
+interface FastEthernet1/0
+ switchport trunk allowed vlan 1,10,20,30,1002-1005
+ switchport mode trunk
+ duplex full
+ speed 100
+!
+interface FastEthernet1/1
+ description ENABLED
+ switchport access vlan 10
+ switchport mode access
+ duplex full
+ speed 100
+!
+interface FastEthernet1/2
+ description ENABLED
+ switchport access vlan 20
+ switchport mode access
+ duplex full
+ speed 100
+!
+interface FastEthernet1/3
+ description ENABLED
+ switchport access vlan 30
+ switchport mode access
+ duplex full
+ speed 100
+!
+interface FastEthernet1/4
+ description UNUSED - DISABLED
+ shutdown
+ duplex full
+ speed 100
+!
+interface FastEthernet1/5
+ description UNUSED - DISABLED
+ shutdown
+ duplex full
+ speed 100
+!
+interface FastEthernet1/6
+ description UNUSED - DISABLED
+ shutdown
+ duplex full
+ speed 100
+!
+interface FastEthernet1/7
+ description UNUSED - DISABLED
+ shutdown
+ duplex full
+ speed 100
+!
+interface FastEthernet1/8
+ description UNUSED - DISABLED
+ shutdown
+ duplex full
+ speed 100
+!
+interface FastEthernet1/9
+ description UNUSED - DISABLED
+ shutdown
+ duplex full
+ speed 100
+!
+interface FastEthernet1/10
+ description UNUSED - DISABLED
+ shutdown
+ duplex full
+ speed 100
+!
+interface FastEthernet1/11
+ description UNUSED - DISABLED
+ shutdown
+ duplex full
+ speed 100
+!
+interface FastEthernet1/12
+ description UNUSED - DISABLED
+ shutdown
+ duplex full
+ speed 100
+!
+interface FastEthernet1/13
+ description UNUSED - DISABLED
+ shutdown
+ duplex full
+ speed 100
+!
+interface FastEthernet1/14
+ description UNUSED - DISABLED
+ shutdown
+ duplex full
+ speed 100
+!
+interface FastEthernet1/15
+ description UNUSED - DISABLED
+ shutdown
+ duplex full
+ speed 100
+!
+interface Vlan1
+ no ip address
+ no ip route-cache
+ shutdown
+!
+interface Vlan30
+ ip address 192.168.30.2 255.255.255.0
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+!
+ip access-list standard ADMIN-SSH
+ permit 192.168.30.10
+ deny   any
+!
+no cdp log mismatch duplex
+!
+!
+!
+!
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+!
+!
+!
+banner exec ^C
+
+***************************************************************
+This is a normal Router with a Switch module inside (NM-16ESW)
+It has been pre-configured with hard-coded speed and duplex
+
+To create vlans use the command "vlan database" in exec mode
+After creating all desired vlans use "exit" to apply the config
+
+To view existing vlans use the command "show vlan-switch brief"
+
+Alias(exec)     : vl   - "show vlan-switch brief" command
+Alias(configure): va X - macro to add vlan X
+Alias(configure): vd X - macro to delete vlan X
+***************************************************************
+
+^C
+alias configure va macro global trace add_vlan $v
+alias configure vd macro global trace del_vlan $v
+alias exec vl show vlan-switch brief
+!
+line con 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+line aux 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+line vty 0 4
+ access-class ADMIN-SSH in
+ login local
+ transport input ssh
+!
+!
+end

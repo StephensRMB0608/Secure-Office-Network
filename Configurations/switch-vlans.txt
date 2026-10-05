@@ -1,0 +1,15 @@
+
+Office-Switch — show vlan-switch brief
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active    Fa1/4, Fa1/5, Fa1/6, Fa1/7
+                                                Fa1/8, Fa1/9, Fa1/10, Fa1/11
+                                                Fa1/12, Fa1/13, Fa1/14, Fa1/15
+10   Employees                        active    Fa1/1
+20   Servers                          active    Fa1/2
+30   Management                       active    Fa1/3
+1002 fddi-default                     act/unsup
+1003 token-ring-default               act/unsup
+1004 fddinet-default                  act/unsup
+1005 trnet-default                    act/unsup

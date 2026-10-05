@@ -1,0 +1,16 @@
+#Run as root on Server.
+mkdir -p /root/office-https
+cd /root/office-https
+umask 077
+
+#Generate a new lab key and self-signed certificate.
+openssl req -x509 -newkey rsa:2048 -noenc \
+  -keyout server.key -out server.crt -days 365 \
+  -subj "/CN=Office-Server" \
+  -addext "subjectAltName=IP:192.168.20.10"
+
+#Start the HTTPS test service.
+openssl s_server -accept 443 -cert server.crt -key server.key -www
+
+#From Employee-PC, in its separate console:
+curl -k --connect-timeout 10 --max-time 20 https://192.168.20.10/
